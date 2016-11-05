@@ -3,6 +3,9 @@ import java.util.Stack;
 
 /**
  * Created by polarvenezia on 2/11/16.
+ *
+ * SAT2 solver class
+ *
  */
 public class SAT2Solver {
 
@@ -14,7 +17,6 @@ public class SAT2Solver {
     private int count;               // number of strongly-connected components
     private Stack<Integer> stack;
     private int[] solution;
-    private int[] solutionMarked;    // -1 is false, 1 is true, 0 is contigent
     DirectedGraph G;
 
     SAT2Solver(DirectedGraph graph){
@@ -23,31 +25,32 @@ public class SAT2Solver {
         stack = new Stack<>();
         id = new int[G.V()];
         low = new int[G.V()];
-        solution = new int[G.numOfV];
-        solutionMarked = new int[G.numOfV];
+        solution = new int[G.numOfV-1];
 
     }
 
     public int[] solve(){
-        // depth first search
+        // depth first search to find strongly connected components
         for (int v = 1; v < G.V(); v++) {
             if (v == G.numOfV) continue;
             if (!marked[v]) dfs(G, v);
         }
 
-        // solve sat2
+        // check satisfiability
         for (int v = 1; v < G.numOfV; v++){
             if (stronglyConnected(v,v+G.numOfV)) {
-                System.out.println(v);
+                System.out.println("Formula Unsatisfiable");
                 return null;
             }
         }
 
+        // find answer according to reverse topological order
         for (int v = 1; v < G.numOfV; v++){
-            if (id[v] < id[v+G.numOfV]) solution[v] = 1;
-            else solution[v] = 0;
+            if (id[v] < id[v+G.numOfV]) solution[v-1] = 1;
+            else solution[v-1] = 0;
         }
 
+        System.out.println("Formula Satisfiable");
         return solution;
     }
 

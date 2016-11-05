@@ -4,6 +4,9 @@ import java.util.List;
 
 /**
  * Created by polarvenezia on 2/11/16.
+ *
+ * Graph class that transform the cnf representation to directed graph representation
+ *
  */
 public class DirectedGraph {
 
@@ -11,32 +14,23 @@ public class DirectedGraph {
     int numOfV = 0;
     int numOfE = 0;
 
-    DirectedGraph(int V){
-        adj = (ArrayList<Integer>[]) new ArrayList[V*2];
-        numOfV = V;
-        for (int i = 0; i < numOfV*2; i++){
-            adj[i] = new ArrayList<>();
-        }
-    }
-
     DirectedGraph (List<String> cnfFile) throws Exception{
         String[] fileInfo = cnfFile.get(1).trim().split("\\s+");
-        numOfV = Integer.parseInt(fileInfo[2]);
+        numOfV = Integer.parseInt(fileInfo[2])+1;
         adj = (ArrayList<Integer>[]) new ArrayList[numOfV*2];
         for (int i = 0; i < numOfV*2; i++){
             adj[i] = new ArrayList<>();
         }
         System.out.println(adj.length);
-        int clauses = Integer.parseInt(fileInfo[3]);
         for (String lines : cnfFile.subList(2,cnfFile.size())){
             String[] lineInfo = lines.trim().split("\\s+");
-            if (lineInfo.length == 3) {
+            if (lineInfo.length == 2) {
                 int v = Integer.parseInt(lineInfo[0]);
                 int w = Integer.parseInt(lineInfo[1]);
                 addEdge(-v,w);
                 addEdge(-w,v);
             }
-            else if (lineInfo.length == 2){
+            else if (lineInfo.length == 1){
                 int v = Integer.parseInt(lineInfo[0]);
                 addEdge(-v,v);
             }
